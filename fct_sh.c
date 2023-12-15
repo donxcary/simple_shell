@@ -71,5 +71,7 @@ int checks(char **arg, char *buff, int exitstat)
 		return (1);
 	}
 	else
+
 	return (0);
+
 }

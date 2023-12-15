@@ -26,7 +26,7 @@ char *_strcpy(char *dest, const char *src)
 * @format: format of string
 * Return: number of characters printed
 */
-int _snprint(char* str, size_t size, const char* format, ...)
+int _snprint(char *str, size_t size, const char *format, ...)
 {
 va_list args;
 	int i;

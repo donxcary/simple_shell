@@ -44,7 +44,8 @@ int main(void)
 }
 
 /**
-* int hsh - main function
+* hsh - main function
+*
 * Return: 0
 */
 int hsh(info_t*, char**)
@@ -86,10 +87,10 @@ int hsh(info_t*, char**)
 }
 
 /**
-* char* dup_chars - main function
+* dup_chars - main function
 * Return: 0
 */
-char* dup_chars(char*, int, int)
+char *dup_chars(char*, int, int)
 {
 	char *dup = NULL;
 	int i = 0, j = 0;
@@ -108,22 +109,4 @@ char* dup_chars(char*, int, int)
 	}
 	dup[j] = '\0';
 	return (dup);
-}
-
-/**
-* char* _pathfbuff - main function
-* Return: 0
-*/
-char* _pathfbuff(char**, char*, char*)
-{
-	return nullptr;
-}
-
-/**
-* char* find_path - main function
-* Return: 0
-*/
-char* find_path(info_t*, char*, char*)
-{
-	return nullptr;
 }

@@ -2,9 +2,9 @@
 
 /**
 * _atoi - convert a string to an integer
-* 
+*
 * @s: string to convert
-* 
+*
 * Return: the integer value of the converted string
 */
 
@@ -34,4 +34,5 @@ int _atoi(char *s)
 		m /= 10;
 	}
 	return (oi * pn);
+
 }

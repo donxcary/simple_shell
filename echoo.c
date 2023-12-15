@@ -3,7 +3,7 @@
 /**
 * _echoo - print a string
 * @arg: argument
-* 
+*
 * Return: 0
 */
 int _echoo(char **arg)
@@ -52,15 +52,15 @@ int _echoo(char **arg)
 
 /**
 * handle_env_var - handle environment variables
-* 
+*
 * @arg: argument
-* 
+*
 * Return: void
 */
 
-void handle_env_var(char* arg)
+void handle_env_var(char *arg)
 {
-	char* va_name, * va_value;
+	char *va_name, *va_value;
 
 	va_name = arg + 1; /* skip $ */
 	va_value = get_env(va_name);

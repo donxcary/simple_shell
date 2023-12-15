@@ -1,40 +1,6 @@
 #include "shell.h"
 
 /**
-* bring_line - assigns the line  var for the get_line
-* @lineptr: the buffer that store the input string
-* @buffer: the string that has been called to the line
-* @n: the size of the line
-* @j: the size of the buffer
-*/
-void bring_line(char **lineptr, size_t *n, char *buffer, size_t j)
-{
-
-	if (*lineptr == NULL)
-	{
-		if (j > BUFSIZE)
-			*n = j;
-		else
-			*n = BUFSIZE;
-		*lineptr = buffer;
-	}
-	else if (*n < j)
-	{
-		if (j > BUFSIZE)
-			*n = j;
-		else
-			*n = BUFSIZE;
-		*lineptr = buffer;
-	}
-	else
-	{
-		_strcpy(*lineptr, buffer);
-		free(buffer);
-	}
-
-}
-
-/**
 * get_line - read the input from stream
 * @lineptr: buffer that stores the input
 * @n: the size of lineptr

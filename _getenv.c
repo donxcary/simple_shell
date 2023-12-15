@@ -1,8 +1,9 @@
 #include "shell.h"
 
 /**
-* get_env - char function
-* Return: NULL
+* *get_env - get the environment
+* @nam: name of the environment
+* Return: the environment
 */
 
 char *get_env(const char *nam)
@@ -87,9 +88,9 @@ void _print_num(int n)
 * @dlm: delimiter
 * Return: a pointer to the next token, NULL if there are no more tokens
 */
-char* _strtok(char* str, const char* dlm)
+char *_strtok(char *str, const char *dlm)
 {
-static char* savept;
+static char *savept;
 	char* p;
 	int i = 0;
 

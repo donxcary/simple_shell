@@ -4,7 +4,7 @@
  * bring_line - bring a line
  * @lineptr: lineptr
  * @buffer: the string that has been called to getline
- * @n: the size of the line	
+ * @n: the size of the line
  * @j: the size of the line
  * Return: line
  */
@@ -24,11 +24,11 @@ void bring_line(char **lineptr, char *buffer, size_t n, int j)
 }
 
 /**
- * _getline - read a line from stdin	
+ * _getline - read a line from stdin
  * Return: line
  */
 
-char *_getline(void)	
+static char *_getline(void)	/* read a line from stdin */
 {
 	char *line = NULL;
 	char *buffer = NULL;
@@ -91,5 +91,41 @@ char **_parse(char *line)
 		i++;
 	}
 	args[i] = NULL;
-	return (args);
+	
+	return (args)
+
+}
+
+/**
+* bring_line - assigns the line  var for the get_line
+* @lineptr: the buffer that store the input string
+* @buffer: the string that has been called to the line
+* @n: the size of the line
+* @j: the size of the buffer
+*/
+void bring_line(char** lineptr, size_t* n, char* buffer, size_t j)
+{
+
+	if (*lineptr == NULL)
+	{
+		if (j > BUFSIZE)
+			*n = j;
+		else
+			*n = BUFSIZE;
+		*lineptr = buffer;
+	}
+	else if (*n < j)
+	{
+		if (j > BUFSIZE)
+			*n = j;
+		else
+			*n = BUFSIZE;
+		*lineptr = buffer;
+	}
+	else
+	{
+		_strcpy(*lineptr, buffer);
+		free(buffer);
+	}
+
 }

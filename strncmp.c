@@ -33,7 +33,7 @@ int _strncmp(const char *s1, const char *s2, size_t n)
 * Return: zero
 */
 
-int exe_cmd(char** argv)
+int exe_cmd(char **argv)
 {
 pid_t pid;
 	int status;
@@ -63,7 +63,7 @@ pid_t pid;
 * Return: zero
 */
 
-char* get_path(char* cmd)
+char *get_path(char *cmd)
 {
 	char *path, *token, *path2;
 	struct stat st;
