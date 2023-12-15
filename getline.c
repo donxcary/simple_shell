@@ -1,23 +1,32 @@
 #include "shell.h"
 
 /**
- * read_char - read a character from the stream and check for errors
- * @t: pointer to the character to store the input
- * @buffer: buffer that stores the input
- * @input: number of bytes read so far
- * Return: number of bytes read, or -1 on error
- */
-int read_char(char *t, char *buffer, ssize_t input)
+* read_char - read a character from standard input
+* Return: the character read, or -1 on error or end of file
+*/
+int read_char(void)
 {
+	char t;
 	int i;
 
-	i = read(STDIN_FILENO, t, 1);
-	if (i == -1 || (i == 0 && input == 0))
-	{
-		free(buffer);
+	i = read(STDIN_FILENO, &t, 1);
+	if (i == -1 || i == 0)
 		return (-1);
-	}
-	return (i);
+	return (t);
+}
+
+/**
+* skip_spaces - skip any consecutive spaces in the input
+* Return: the next non-space character, or -1 on error or end of file
+*/
+int skip_spaces(void)
+{
+	int t;
+
+	t = read_char();
+	while (t == ' ')
+		t = read_char();
+	return (t);
 }
 
 /**
@@ -32,7 +41,7 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 	int i;
 	static ssize_t input;
 	ssize_t retval;
-	char *buffer, t = 'z';
+	char* buffer, t = 'z';
 
 	if (input == 0)
 		fflush(stream);
@@ -44,13 +53,11 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 		return (-1);
 	while (t != '\n')
 	{
-		i = read_char(&t, buffer, input); /* call the helper function */
-		if (i == -1)
-			return (-1);
-		if (i == 0 && input != 0)
+		t = read_char();
+		if (t == -1)
 		{
-			input++;
-			break;
+			free(buffer);
+			return (-1);
 		}
 		if (input >= BUFSIZE)
 		{
@@ -62,22 +69,17 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 		input++;
 		if (t == ' ')
 		{
-			while (i == 1 && t == ' ')
-			{
-				i = read_char(&t, buffer, input); /* call the helper function */
-				if (i == -1)
-					return (-1);
-			}
-			if (i == 0)
+			t = skip_spaces();
+			if (t == -1)
 				break;
 			buffer[input] = t;
 			input++;
 		}
 	}
 	buffer[input] = '\0';
-	bring_line(lineptr, buffer, n, input);
+	bring_line(lineptr, n, buffer, input);
 	retval = input;
-	if (i !== 0)
+	if (t != -1)
 		input = 0;
 	return (retval);
 }
