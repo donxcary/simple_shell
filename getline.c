@@ -1,6 +1,26 @@
 #include "shell.h"
 
 /**
+ * read_char - read a character from the stream and check for errors
+ * @t: pointer to the character to store the input
+ * @buffer: buffer that stores the input
+ * @input: number of bytes read so far
+ * Return: number of bytes read, or -1 on error
+ */
+int read_char(char *t, char *buffer, ssize_t input)
+{
+	int i;
+
+	i = read(STDIN_FILENO, t, 1);
+	if (i == -1 || (i == 0 && input == 0))
+	{
+		free(buffer);
+		return (-1);
+	}
+	return (i);
+}
+
+/**
 * get_line - read the input from stream
 * @lineptr: buffer that stores the input
 * @n: the size of lineptr
@@ -24,12 +44,9 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 		return (-1);
 	while (t != '\n')
 	{
-		i = read(STDIN_FILENO, &t, 1);
-		if (i == -1 || (i == 0 && input == 0))
-		{
-			free(buffer);
+		i = read_char(&t, buffer, input); /* call the helper function */
+		if (i == -1)
 			return (-1);
-		}
 		if (i == 0 && input != 0)
 		{
 			input++;
@@ -47,12 +64,9 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 		{
 			while (i == 1 && t == ' ')
 			{
-				i = read(STDIN_FILENO, &t, 1);
+				i = read_char(&t, buffer, input); /* call the helper function */
 				if (i == -1)
-				{
-					free(buffer);
 					return (-1);
-				}
 			}
 			if (i == 0)
 				break;
@@ -61,9 +75,9 @@ ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
 		}
 	}
 	buffer[input] = '\0';
-	bring_line(lineptr, n, buffer, input);
+	bring_line(lineptr, buffer, n, input);
 	retval = input;
-	if (i != 0)
+	if (i !== 0)
 		input = 0;
 	return (retval);
 }

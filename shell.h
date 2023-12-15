@@ -17,7 +17,7 @@
 #define BUFSIZE 1024
 #define DELIM " \t\r\n\a"
 #define TOK_DELIM " \t\r\n\a\""
-extern char** environ;
+extern char **environ;
 
 int _strcmp(char *s1, char *s2);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
@@ -52,7 +52,7 @@ int checks(char **arg, char *buff, int exitstat);
 void _puts(char *str);
 char *_memset(char *s, char b, unsigned int n);
 int _splitstring(char *s);
-void handle_env_var(char* arg);
+void handle_env_var(char *arg);
 
 /* Alias function */
 
@@ -120,9 +120,9 @@ typedef struct liststr
 * @cmd_buf_type: the command buffer type
 * @readfd: the read file descriptor
 * @histcount: the history count
-* 
+*
 * Description: the structure to pass to functions
-* 
+*
 * Notes:
 * 1. the cmd_buf is a chain buffer, so that it can be freed easily
 * 2. the cmd_buf_type is the type of the command in the buffer
@@ -177,7 +177,7 @@ typedef struct builtin
 
 /************************* toem_shloop.c *************************/
 
-int hsh(info_t *, char **);
+int hash(info_t *, char **);
 int find_builtin(info_t *);
 void find_cmd(info_t *);
 void fork_cmd(info_t *);
@@ -194,7 +194,7 @@ int loophsh(char **);
 
 /************************* toem_errors.c *************************/
 
-void _eputs(char *);
+void _eputs(char *str);
 int _eputchar(char);
 int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
@@ -251,6 +251,7 @@ int _myalias(info_t *);
 ssize_t get_input(info_t *);
 int _getline(info_t *, char **, size_t *);
 void sigintHandler(int);
+ssize_t _getline(char** lineptr, size_t* n, FILE* stream);
 
 /************************* toem_getinfo.c *************************/
 void clear_info(info_t *);

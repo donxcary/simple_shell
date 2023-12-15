@@ -1,5 +1,29 @@
 #include "shell.h"
 
+
+/**
+* handle_env_var - handle environment variables
+*
+* @arg: argument
+*
+* Return: void
+*/
+
+void handle_env_var(char *arg)
+{
+	char *va_name, *va_value;
+
+	va_name = arg + 1; /* skip $ */
+	va_value = get_env(va_name);
+	if (va_value != NULL)
+	{
+		_print_str(va_value);
+		_print_str("\n");
+	}
+	else
+		_print_str("\n");
+}
+
 /**
 * _echoo - print a string
 * @arg: argument
@@ -48,27 +72,4 @@ int _echoo(char **arg)
 		}
 	}
 	return (0);
-}
-
-/**
-* handle_env_var - handle environment variables
-*
-* @arg: argument
-*
-* Return: void
-*/
-
-void handle_env_var(char *arg)
-{
-	char *va_name, *va_value;
-
-	va_name = arg + 1; /* skip $ */
-	va_value = get_env(va_name);
-	if (va_value != NULL)
-	{
-		_print_str(va_value);
-		_print_str("\n");
-	}
-	else
-		_print_str("\n");
 }

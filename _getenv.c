@@ -91,7 +91,7 @@ void _print_num(int n)
 char *_strtok(char *str, const char *dlm)
 {
 static char *savept;
-	char* p;
+	char *p;
 	int i = 0;
 
 	if (str == NULL)

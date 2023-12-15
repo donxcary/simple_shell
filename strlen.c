@@ -24,9 +24,9 @@ size_t _strlen(const char *str)
  * Return: pointer to duplicated string
 */
 
-char* _strdup(char* str)
+char *_strdup(char *str)
 {
-	char* dup;
+	char *dup;
 	int i, len;
 
 	if (str == NULL)
@@ -55,10 +55,10 @@ char* _strdup(char* str)
  * Return: pointer to concatenated string
 */
 
-char* _strcat(char* dest, char* src)
+char *_strcat(char *dest, char *src)
 {
 	int i, j, len1, len2;
-	char* new;
+	char *new;
 
 	len1 = _strlen(dest);
 	len2 = _strlen(src);
@@ -87,9 +87,9 @@ char* _strcat(char* dest, char* src)
  * Return: pointer to tokenized string
 */
 
-char* _strtok(char* str, char* delim)
+char *_strtok(char *str, char *delim)
 {
-	static char* token;
+	static char *token;
 	int i, j, len;
 
 	if (str != NULL)
@@ -113,4 +113,31 @@ char* _strtok(char* str, char* delim)
 	token = token + len + 1;
 
 	return (token - len - 1);
+}
+
+/**
+ * _strcmp - compares two strings
+ * @s1: first string to compare
+ * @s2: second string to compare
+ *
+ * Return: difference between strings
+*/
+
+int _strcmp(char *s1, char *s2)
+{
+	int i, len1, len2;
+
+	len1 = _strlen(s1);
+	len2 = _strlen(s2);
+
+	if (len1 != len2)
+		return (len1 - len2);
+
+	for (i = 0; s1[i] != '\0'; i++)
+	{
+		if (s1[i] != s2[i])
+			return (s1[i]);
+	}
+
+	return (0);
 }

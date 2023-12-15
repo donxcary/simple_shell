@@ -23,7 +23,7 @@ void _memcpy(void *newptr, const void *ptr, unsigned int size)
 * @str: the string to print
 * Return: 0
 */
-void _eputs(char*)
+void _eputs(char *str)
 {
 	int i;
 
@@ -45,7 +45,7 @@ int _eputchar(char)
 /**
 * _putfd - prints a char to a file descriptor
 * @c: the char to print
-* 
+* @fd: the file descriptor
 * Return: 0
 */
 int _putfd(char c, int fd)
@@ -56,10 +56,10 @@ int _putfd(char c, int fd)
 /**
 * _putsfd - prints a string to a file descriptor
 * @str: the string to print
-* 
+* @fd: the file descriptor
 * Return: 0
 */
-int _putsfd(char* str, int fd)
+int _putsfd(char *str, int fd)
 {
 int i;
 
@@ -74,7 +74,7 @@ int i;
 * @s2: second string
 * Return: 0 if equal, else the difference
 */
-int _strcmp(char* s1, char* s2)
+int _strcmp(char *s1, char *s2)
 {
 int i = 0;
 
@@ -90,7 +90,7 @@ int i = 0;
 * @start: the string to check against
 * Return: 0 if equal, else the difference
 */
-char* starts_with(const char*, const char*)
+char *starts_with(const char *str, const char *start)
 {
 int i = 0;
 
@@ -135,4 +135,26 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 
 	free(ptr);
 	return (newptr);
+}
+
+/**
+* _atoi - converts a string to an integer
+* @s: the string to convert
+* Return: the integer
+*/
+
+int _atoi(char *s)
+{
+	int i, sign = 1, num = 0;
+
+	for (i = 0; s[i] != '\0'; i++)
+	{
+		if (s[i] == '-')
+			sign *= -1;
+		else if (s[i] >= '0' && s[i] <= '9')
+			num = num * 10 + (s[i] - '0');
+		else if (num > 0)
+			break;
+	}
+	return (num * sign);
 }

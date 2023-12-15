@@ -44,11 +44,35 @@ int main(void)
 }
 
 /**
-* hsh - main function
-*
+* dup_chars - main function
 * Return: 0
 */
-int hsh(info_t*, char**)
+char *dup_chars(char*, int, int)
+{
+	char *dup = NULL;
+	int i = 0, j = 0;
+
+	if (str == NULL)
+		return (NULL);
+	while (str[i] != '\0')
+		i++;
+	dup = malloc(sizeof(char) * (i + 1));
+	if (dup == NULL)
+		return (NULL);
+	while (j < i)
+	{
+		dup[j] = str[j];
+		j++;
+	}
+	dup[j] = '\0';
+	return (dup);
+}
+
+/**
+* hash - main function
+* Return: 0
+*/
+int hash(info_t*, char**)
 {
 	char *fpb = NULL, *copy = NULL, *buff = NULL;
 	char *PATH = NULL;
@@ -84,29 +108,4 @@ int hsh(info_t*, char**)
 	}
 
 	return (0);
-}
-
-/**
-* dup_chars - main function
-* Return: 0
-*/
-char *dup_chars(char*, int, int)
-{
-	char *dup = NULL;
-	int i = 0, j = 0;
-
-	if (str == NULL)
-		return (NULL);
-	while (str[i] != '\0')
-		i++;
-	dup = malloc(sizeof(char) * (i + 1));
-	if (dup == NULL)
-		return (NULL);
-	while (j < i)
-	{
-		dup[j] = str[j];
-		j++;
-	}
-	dup[j] = '\0';
-	return (dup);
 }
