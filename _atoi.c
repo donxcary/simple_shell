@@ -10,6 +10,7 @@ int _strlen(char *s)
 {
 	/* count the number of characters in the string */
 	int i = 0; /* counter */
+
 	while (s[i])
 		i++; /* add 1 to counter for each character */
 
@@ -32,7 +33,7 @@ int _isalpha(int c)
 
 /**
  * is_delim - checks if character is a delimeter character
- * 
+ *
  * Description: checks if character is a delimeter character
  * @c: the char to check
  * @delim: the delimeter string
@@ -52,7 +53,7 @@ int is_delim(char c, char *delim)
 * @info: the info struct
 * Return: 1 if interactive, 0 if not
 */
-int interactive(info_t* info)
+int interactive(info_t *info)
 {
 	return (isatty(STDIN_FILENO) && info->readfd <= 2);
 }

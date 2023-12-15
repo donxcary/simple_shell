@@ -8,8 +8,9 @@
  */
 char **strtow2(char *str, char d)
 {
-	int i, j, k, m, numwords = 0; /* i = str index, j = word index, k = word len, m = char index */
+	int i, j, k, m, numwords = 0;
 	char **s; /* s = array of words */
+
 	if (str == NULL || str[0] == 0)
 		return (NULL); /* if str is NULL or empty, return NULL */
 	for (i = 0; str[i] != '\0'; i++)
@@ -18,7 +19,7 @@ char **strtow2(char *str, char d)
 			numwords++; /* count the number of words in str */
 	if (numwords == 0)
 		return (NULL); /* if no words, return NULL */
-	s = malloc((1 + numwords) * sizeof(char *)); /* allocate memory for array of words */
+	s = malloc((1 + numwords) * sizeof(char *));
 	if (!s)
 		return (NULL); /* if malloc fails, return NULL */
 	for (i = 0, j = 0; j < numwords; j++) /* for each word */
@@ -74,11 +75,11 @@ char *_strdup(char *str)
  * @d: the delimeter string
  * Return: a pointer to an array of strings, or NULL on failure
  */
-char** strtow(char* str, char* d)
+char **strtow(char *str, char *d)
 {
 	/* i = str index, j = word index, k = word len, m = char index */
 	int i, j, k, m, numwords = 0;
-	char** s; /* s = array of words */
+	char **s; /* s = array of words */
 
 	if (str == NULL || str[0] == 0)
 		return (NULL); /* if str is NULL or empty, return NULL */
@@ -90,7 +91,7 @@ char** strtow(char* str, char* d)
 
 	if (numwords == 0)
 		return (NULL); /* if no words, return NULL */
-	s = malloc((1 + numwords) * sizeof(char*)); /* allocate memory for array of words */
+	s = malloc((1 + numwords) * sizeof(char *));
 	if (!s)
 		return (NULL); /* if malloc fails, return NULL */
 	for (i = 0, j = 0; j < numwords; j++)

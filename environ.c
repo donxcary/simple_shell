@@ -23,7 +23,7 @@ int _myenv(info_t *info)
 char *_mygetenv(info_t *info, char *name)
 {
 	list_t *node = info->env
-	char* p;
+	char *p;
 
 	while (node)
 	{

@@ -132,11 +132,11 @@ int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
 
 /************************* errors1 *************************/
-int _erratoi(char*);
-void print_error(info_t*, char*);
+int _erratoi(char *);
+void print_error(info_t *, char *);
 int print_d(int, int);
-char* convert_number(long int, int, int);
-void remove_comments(char*);
+char *convert_number(long int, int, int);
+void remove_comments(char *);
 
 /************************* string *************************/
 int _strlen(char *);
@@ -180,15 +180,15 @@ int _myhelp(info_t *);
 
 /************************* builtin1 *************************/
 int _myhistory(info_t *);
-int unset_alias(info_t* info, char* str);
-int print_alias(list_t* node);
-int set_alias(info_t* info, char* str);
+int unset_alias(info_t *info, char *str);
+int print_alias(list_t *node);
+int set_alias(info_t *info, char *str);
 int _myalias(info_t *);
 
 /************************* getline *************************/
 ssize_t get_input(info_t *);
-ssize_t input_buf(info_t* info, char** buf, size_t* len);
-ssize_t read_buf(info_t* info, char* buf, size_t* i);
+ssize_t input_buf(info_t *info, char **buf, size_t *len);
+ssize_t read_buf(info_t *info, char *buf, size_t *i);
 
 /************************* getline1 *************************/
 int _getline(info_t *, char **, size_t *);

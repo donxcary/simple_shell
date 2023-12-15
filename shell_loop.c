@@ -140,7 +140,7 @@ void fork_cmd(info_t *info)
 	if (child_pid == 0) /* child process */
 	{
 		if (execve(info->path, info->argv, get_environ(info)) == -1)
-		{ 
+		{
 			/* execute command */
 			free_info(info, 1); /* free info struct */
 			if (errno == EACCES)

@@ -9,6 +9,7 @@
 char *_strcpy(char *dest, char *src)
 {
 	int i = 0; /* counter */
+
 	if (dest == src || src == 0)
 		return (dest); /* account for NULL */
 	while (src[i])
@@ -51,6 +52,7 @@ char *_strdup(const char *str)
 void _puts(char *str)
 {
 	int i = 0; /* counter */
+
 	if (!str)
 		return; /* account for NULL */
 	while (str[i] != '\0')

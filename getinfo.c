@@ -49,7 +49,7 @@ void set_info(info_t *info, char **av)
  * @info: struct address
  * @all: true if freeing all fields
  */
-void free_info(info_t* info, int all)
+void free_info(info_t *info, int all)
 {
 	ffree(info->argv);
 	info->argv = NULL;
@@ -66,7 +66,7 @@ void free_info(info_t* info, int all)
 			free_list(&(info->alias));
 			ffree(info->environ);
 		info->environ = NULL;
-			bfree((void**)info->cmd_buf);
+			bfree((void **)info->cmd_buf);
 		if (info->readfd > 2)
 			close(info->readfd);
 			_putchar(BUF_FLUSH);

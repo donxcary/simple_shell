@@ -5,7 +5,7 @@
 * @str: the string to be printed
 * Return: nothing
 */
-void _eputs(char* str)
+void _eputs(char *str)
 {
 	int i = 0;
 
