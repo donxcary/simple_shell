@@ -1,86 +1,127 @@
 #include "shell.h"
 
 /**
- * _getenv - gets the value of an environment variable	
- * @name: name of the environment variable
- *	Return: value of the environment variable
- */
+* get_env - char function
+* Return: NULL
+*/
 
-char *_getenv(const char *name)
+char *get_env(const char *nam)
 {
-	int i = 0, j = 0, k = 0;
-	char *value = NULL;
+	int a, result;
 
-	if (name == NULL)
-		return (NULL);
-
-	while (environ[i] != NULL)
+	for (a = 0; environ[a]; a++)
 	{
-		while (environ[i][j] == name[j])
+		result = _PATHstrcmp(nam, environ[a]);
+		if (result == 0)
 		{
-			if (environ[i][j + 1] == '=')
-			{
-				value = malloc(sizeof(char) * 1024);
-				if (value == NULL)
-					return (NULL);
-				while (environ[i][j + 2 + k] != '\0')
-				{
-					value[k] = environ[i][j + 2 + k];
-					k++;
-				}
-				value[k] = '\0';
-				return (value);
-			}
-			j++;
+			return (environ[a]);
 		}
-		i++;
-		j = 0;
 	}
 	return (NULL);
 }
 
 /**
- * _setenv - sets the value of an environment variable
- * @name: name of the environment variable
- * @value: value of the environment variable
- * Return: 0 on success, -1 on failure
- */
+* _env - print the environ
+* Return: zero
+*/
 
-int _setenv(const char *name, const char *value)
+int _env(void)
 {
-	int i = 0, j = 0, k = 0;
-	char *newenv = NULL;
+	int a;
 
-	if (name == NULL || value == NULL)
-		return (-1);
+	for (a = 0; environ[a]; a++)
+		_puts(environ[a]);
+	return (0);
+}
 
-	while (environ[i] != NULL)
+/**
+* _print_str - writes a string into the standard output
+* @str: string
+* Return: number of characters printed
+*/
+
+int _print_str(char *str)
+{
+	int i = 0;
+
+	if (str == NULL)
 	{
-		while (environ[i][j] == name[j])
-		{
-			if (environ[i][j + 1] == '=')
-			{
-				newenv = malloc(sizeof(char) * 1024);
-				if (newenv == NULL)
-					return (-1);
-				while (environ[i][j + 2 + k] != '\0')
-				{
-					newenv[k] = environ[i][j + 2 + k];
-					k++;
-				}
-				newenv[k] = '\0';
-				free(environ[i]);
-				environ[i] = malloc(sizeof(char) * 1024);
-				if (environ[i] == NULL)
-					return (-1);
-				environ[i] = _strcat((char *)name, "=");
-				environ[i] = _strcat(environ[i], (char *)value);
-				return (0);
-			}
-			j++;
-		}
-		i++;
-		j = 0;
+		write(1, "(null", 6);
+		return (6);
 	}
-	return (-1);
+	while (str[i] != '\0')
+	{
+		_putchar(str[i]);
+		i++;
+	}
+	return (i);
+}
+
+/**
+* _print_num - function prints an number integer
+* @n: integer
+*/
+void _print_num(int n)
+{
+	unsigned int n1;
+
+	if (n < 0)
+	{
+		n1 = -n;
+		_putchar('-');
+	}
+	else
+	{
+		n1 = n;
+	}
+	if (n1 / 10)
+	{
+		_print_num(n1 / 10);
+	}
+	_putchar((n1 % 10) + '0');
+}
+
+/**
+* _strtok - function that splits a string into tokens
+* @str: string
+* @dlm: delimiter
+* Return: a pointer to the next token, NULL if there are no more tokens
+*/
+char* _strtok(char* str, const char* dlm)
+{
+static char* savept;
+	char* p;
+	int i = 0;
+
+	if (str == NULL)
+		str = savept;
+	do {
+		if (*str == '\0')
+			return (NULL);
+		for (i = 0; dlm[i] != '\0'; i++)
+		{
+			if (*str == dlm[i])
+			{
+				str++;
+				i = 0;
+			}
+		}
+		p = str;
+		while (*str != '\0')
+		{
+			for (i = 0; dlm[i] != '\0'; i++)
+			{
+				if (*str == dlm[i])
+				{
+					*str = '\0';
+					savept = str + 1;
+					return (p);
+				}
+			}
+			str++;
+		}
+		*str = '\0';
+		savept = str;
+	} while (*p == '\0');
+	return (p);
 }

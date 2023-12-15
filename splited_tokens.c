@@ -1,111 +1,59 @@
 #include "shell.h"
 
 /**
- * _splitstring - int function
- * @str: argument
- * @delim: delimiter
- * Return: int
- */
- 
-int _splitstring(char* str, char* delim)
+* _splitstring - function
+*@s:argument
+*Return: int
+*/
+int _splitstring(char *s)
 {
-	int i = 0, num = 0;
+	int i;
+	int srcflg = 1;
+	int cmp = 0;
 
-	while (str[i])
+	for (i = 0; s[i]; i++)
 	{
-		if (str[i] == *delim)
-			num++;
-		i++;
-	}
-	return (num);
-}
-
-/**
- * split - split input to tokens
- * @buffer: string	
- * @delim: delimiter
- * Return: array of tokens
- */
-
-char **split(char *buffer, char *delim)
-{
-	char **tokens;
-	char *token;
-	int i = 0, j = 0, num = 0;
-
-	num = _splitstring(buffer, delim);
-	tokens = malloc(sizeof(char *) * (num + 1));
-	if (tokens == NULL)
-		return (NULL);
-	token = strtok(buffer, delim);
-	while (token != NULL)
-	{
-		tokens[i] = malloc(sizeof(char) * (_strlen(token) + 1));
-		if (tokens[i] == NULL)
+		if (s[i] != ' ' && srcflg == 1)
 		{
-			for (j = 0; j < i; j++)
-				free(tokens[j]);
-			free(tokens);
-			return (NULL);
+			cmp += 1;
+			srcflg = 0;
 		}
-		_strcpy(tokens[i], token);
-		token = strtok(NULL, delim);
-		i++;
+		if (s[i + 1] == ' ')
+			srcflg = 1;
 	}
-	tokens[i] = NULL;
-	return (tokens);
+	return (cmp);
 }
 
+
 /**
- * _strtok - int function
- * @str: char pointer
- * @delim: char pointer
- * Return: char pointer
- */
-
-char *_strtok(char *str, char *delim)
+* split - split inputs to tokens
+* @buff: string
+*
+* Return: tokens
+*/
+char **split(char *buff)
 {
-	static char *save;
-	char *token;
-	int i = 0;
+	const char *delimiters = " \n";
+	const char *tokens;
+	int number_tokens = 0, i = 0;
+	char **arg;
 
-	if (str == NULL)
-		str = save;
-	if (*str == '\0')
+	number_tokens = _splitstring(buff);
+	if (!number_tokens)
 		return (NULL);
-	token = str;
-	str = _strpbrk(token, delim);
-	if (str == NULL)
-		save = _strchr(token, '\0');
-	else
+	arg = malloc((number_tokens + 1) * sizeof(char *));
+	if (arg == NULL)
+		exit(1);
+
+	/* Split the input string to an array */
+	tokens = _strtok(buff, delimiters);
+
+	while (tokens != NULL)
 	{
-		*str = '\0';
-		save = str + 1;
-	}
-	return (token);
-}
-
-/**
- * _strpbrk - int function
- * @s: char pointer
- * @accept: char pointer
- * Return: char pointer
- */
-
-char *_strpbrk(char *s, char *accept)
-{
-	int i = 0, j = 0;
-
-	while (s[i])
-	{
-		while (accept[j])
-		{
-			if (s[i] == accept[j])
-				return (s + i);
-			j++;
-		}
-		j = 0;
+		arg[i] = _strdup(tokens);
+		tokens = _strtok(NULL, delimiters);
 		i++;
 	}
-	return (NULL);
+	arg[i] = NULL;
+	return (arg);
 }

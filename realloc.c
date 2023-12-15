@@ -1,55 +1,138 @@
 #include "shell.h"
 
 /**
- * _memcpy - function that copies memory area
- * @newptr: pointer to the memory area to copy
- * @ptr: pointer to the memory area to copy from
- * @size: size of the memory to copy
- * Return: pointer to the memory area newptr
- */
+* _memcpy - copy infos between void ptrs
+* @newptr: destination ptr
+* @ptr: the source pointer
+* @size: the size of the new ptr
+* Return: 0
+*/
 
-void *_memcpy(void *newptr, const void *ptr, size_t size)
+void _memcpy(void *newptr, const void *ptr, unsigned int size)
 {
-	char *p = newptr;
-	const char *q = ptr;
+	char *char_newptr = (char *)newptr;
+	char *char_ptr = (char *)ptr;
+	unsigned int i;
 
-	while (size--)
-		*p++ = *q++;
-	return (newptr);
+	for (i = 0; i < size; i++)
+		char_newptr[i] = char_ptr[i];
 }
 
 /**
- * _realloc - function that reallocates a memory block using malloc and free
- * @ptr: pointer to the memory previously allocated
- * @old_size: size, in bytes, of the allocated space for ptr
- * @new_size: new size, in bytes of the new memory block
- * Return: pointer to the new memory block
- */
-
-void* _realloc(void* ptr, unsigned int old_size, unsigned int new_size)
+* _eputs - prints a string to stderr
+* @str: the string to print
+* Return: 0
+*/
+void _eputs(char*)
 {
-	void* newptr;
+	int i;
 
-	if (new_size == old_size)
-		return (ptr);
+	for (i = 0; str[i] != '\0'; i++)
+		;
+	write(STDERR_FILENO, str, i);
+}
+
+/**
+* _eputchar - prints a char to stderr
+* @char: the char to print
+* Return: 0
+*/
+int _eputchar(char)
+{
+	return (write(STDERR_FILENO, &c, 1));
+}
+
+/**
+* _putfd - prints a char to a file descriptor
+* @c: the char to print
+* 
+* Return: 0
+*/
+int _putfd(char c, int fd)
+{
+	return (write(fd, &c, 1));
+}
+
+/**
+* _putsfd - prints a string to a file descriptor
+* @str: the string to print
+* 
+* Return: 0
+*/
+int _putsfd(char* str, int fd)
+{
+int i;
+
+	for (i = 0; str[i] != '\0'; i++)
+		;
+	return (write(fd, str, i));
+}
+
+/**
+* _strcmp - compares two strings
+* @s1: first string
+* @s2: second string
+* Return: 0 if equal, else the difference
+*/
+int _strcmp(char* s1, char* s2)
+{
+int i = 0;
+
+	while (s1[i] == s2[i] && s1[i] != '\0')
+		i++;
+
+	return (s1[i] - s2[i]);
+}
+
+/**
+* starts_with - checks if a string starts with another
+* @str: the string to check
+* @start: the string to check against
+* Return: 0 if equal, else the difference
+*/
+char* starts_with(const char*, const char*)
+{
+int i = 0;
+
+	while (str[i] == start[i] && str[i] != '\0')
+		i++;
+
+	if (start[i] == '\0')
+		return (str + i);
+	return (NULL);
+}
+
+/**
+* _realloc - reallocates a memory block
+* @ptr: pointer to the memory prev allocated
+* @old_size: size in bytes of the allocated space of pointer
+* @new_size: new size in bytes of the new memory block
+* Return: pointer
+*/
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+{
+	void *newptr;
+
 	if (ptr == NULL)
-	{
-		newptr = malloc(new_size);
-		if (newptr == NULL)
-			return (NULL);
-		free(ptr);
-		return (newptr);
-	}
-	if (new_size == 0 && ptr != NULL)
+		return (malloc(new_size));
+
+	if (new_size == 0)
 	{
 		free(ptr);
 		return (NULL);
 	}
+	if (new_size == old_size)
+		return (ptr);
+
 	newptr = malloc(new_size);
 	if (newptr == NULL)
 		return (NULL);
-	if (new_size > old_size)
+
+	if (new_size < old_size)
+		_memcpy(newptr, ptr, new_size);
+	else
 		_memcpy(newptr, ptr, old_size);
+
 	free(ptr);
 	return (newptr);
 }

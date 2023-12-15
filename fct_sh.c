@@ -1,80 +1,75 @@
 #include "shell.h"
-
 /**
- * _read - read a line from stdin	
- * Return: line
- */
-
+* _read - function
+* Return: char
+*/
 char *_read(void)
 {
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read = 0;
-
-	read = getline(&line, &len, stdin);
-	if (read == -1)
-	{
-		free(line);
-		return (NULL);
-	}
-	return (line);
-}
-
-/**
- * _parse - parse a line
- * @line: line to parse
- * Return: array of strings
- */
-
-char **_parse(char *line)
-{
-	char **args = NULL;
-	char *token = NULL;
 	int i = 0;
+	ssize_t count = 0;
+	size_t n = 0;
+	char *buff = NULL;
 
-	args = malloc(sizeof(char *) * 1024);
-	if (args == NULL)
-		return (NULL);
-	token = strtok(line, " \n");
-	while (token != NULL)
+	count = get_line(&buff, &n, stdin);
+	if (count == -1)
 	{
-		args[i] = token;
-		token = strtok(NULL, " \n");
-		i++;
+		free(buff);
+		if (isatty(STDIN_FILENO) != 0)
+			write(STDOUT_FILENO, "\n", 1);
+		exit(0);
 	}
-	args[i] = NULL;
-	return (args);
-}
-
-
-/**
- * _execute - execute a command
- * @args: arguments
- * Return: 0 on success
- */
-
-int _execute(char **args)
-{
-	pid_t pid;
-	int status;
-
-	pid = fork();
-	if (pid == 0)
+	if (buff[count - 1] == '\n' || buff[count - 1] == '\t')
+		buff[count - 1] = '\0';
+	for (i = 0; buff[i]; i++)
 	{
-		if (execve(args[0], args, NULL) == -1)
+		if (buff[i] == '#' && buff[i - 1] == ' ')
 		{
-			perror("Error");
-			return (1);
+			buff[i] = '\0';
+			break;
 		}
 	}
-	else if (pid < 0)
+	return (buff);
+}
+
+/**
+* checks - function
+* @arg: char
+* @buff: char
+* @exitstat: int
+* Return: char
+*/
+int checks(char **arg, char *buff, int exitstat)
+{
+	int n;
+
+	if (_strncmp(arg[0], "env", 3) == 0)
 	{
-		perror("Error");
+		_env();
+		for (n = 0; arg[n]; n++)
+			free(arg[n]);
+		free(arg);
+		free(buff);
+		return (1);
+	}
+	else if (_strncmp(arg[0], "exit", 4) == 0)
+	{
+		if (arg[1] != NULL)
+			exitstat = atoi(arg[1]);
+		for (n = 0; arg[n]; n++)
+			free(arg[n]);
+		free(arg);
+		free(buff);
+		exit(exitstat);
+	}
+	else if (_strncmp(arg[0], "echo", 4) == 0)
+	{
+		_echoo(arg);
+		for (n = 0; arg[n]; n++)
+			free(arg[n]);
+		free(arg);
+		free(buff);
 		return (1);
 	}
 	else
-	{
-		wait(&status);
-	}
 	return (0);
 }

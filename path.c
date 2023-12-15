@@ -1,113 +1,68 @@
 #include "shell.h"
 
 /**
- * _splitPATH - int function
- * @str: char pointer
- * Return: num PATH
- */
+* _splitPATH - int function
+* @str: prm
+* Return: num Path
+*/
 
-int _splitPATH(char* str)
+int _splitPATH(char *str)
 {
-	int i = 0, num = 0;
+	int a;
+	int count = 0;
+	int srcflg = 1;
 
-	while (str[i])
+	for (a = 0; str[a]; a++)
 	{
-		if (str[i] == ':')
-			num++;
-		i++;
-	}
-	return (num);
-}
-
-/**
- * _strtok - int function
- * @str: char pointer
- * @delim: char pointer
- * Return: char pointer
- */
-
-char *_strtok(char *str, char *delim)
-{
-	static char *save;
-	char *token = NULL;
-
-	if (str == NULL)
-		str = save;
-	str += _strspn(str, delim);
-	if (*str == '\0')
-		return (NULL);
-	token = str;
-	str = _strpbrk(token, delim);
-	if (str == NULL)
-		save = _strchr(token, '\0');
-	else
-	{
-		*str = '\0';
-		save = str + 1;
-	}
-	return (token);
-}
-
-/**
- * _PATHstrcmpr - int function
- * @s1: char pointer
- * @s2: char pointer
- * Return: int
- */
-
-int _PATHstrcmpr(char *s1, char *s2)
-{
-	int i = 0;
-
-	while (s1[i] && s2[i])
-	{
-		if (s1[i] != s2[i])
-			break;
-		i++;
-	}
-	if (s1[i] == '=' && s2[i] == '\0')
-		return (0);
-	return (1);
-}
-
-/**
- * _PATH - int function
- * @args: char pointer
- * @PATH: char pointer
- * @copy: char pointer
- * Return: char pointer
- */
-
-char *_PATH(char **args, char *PATH, char *copy)
-{
-	char *ptr = NULL;
-	char *token = NULL;
-	int i = 0;
-
-	token = _strtok(PATH, ":");
-	while (token != NULL)
-	{
-		ptr = malloc(sizeof(char) * (_strlen(token) + _strlen(args[0]) + 2));
-		if (ptr == NULL)
-			return (NULL);
-		while (token[i])
+		if (str[a] != ':' && srcflg == 1)
 		{
-			ptr[i] = token[i];
-			i++;
+			count += 1;
+			srcflg = 0;
 		}
-		ptr[i] = '/';
-		i++;
-		ptr[i] = '\0';
-		ptr = _strcat(ptr, args[0]);
-		if (access(ptr, F_OK) == 0)
+		if (str[a + 1] == ':')
 		{
-			free(copy);
-			return (ptr);
+			srcflg = 1;
 		}
-		free(ptr);
-		token = _strtok(NULL, ":");
-		i = 0;
 	}
-	free(copy);
-	return (NULL);
+	return (count);
+}
+
+/**
+* _PATHstrcmp - int function
+* @s1: prm
+* @s2: prm
+* Return: zero
+*/
+
+int _PATHstrcmp(const char *s1, const char *s2)
+{
+	int a;
+
+	for (a = 0; s2[a] != '='; a++)
+	{
+		if (s1[a] != s2[a])
+			return (-1);
+	}
+	return (0);
+}
+
+/**
+* _con_cat - charcter function
+* @arg: vrbl
+* @tok: vrbl
+* @tmp: vrbl
+* Return: zero
+*/
+
+char *_con_cat(char *tmp, char **arg, char *tok)
+{
+	int len = 0;
+
+	_memset(tmp, 0, 256);
+	len = _strlen(tok) + _strlen(arg[0]) + 2;
+	_strcat(tmp, tok);
+	_strcat(tmp, "/");
+	_strcat(tmp, arg[0]);
+	tmp[len - 1] = '\0';
+	return (tmp);
 }

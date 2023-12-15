@@ -1,29 +1,21 @@
 #include "shell.h"
 
 /**
- * _strcat - concatenates two strings
- * @dest: string to be appended to
- * @src: string to append
- * Return: pointer to dest
- */
+* _strcat - concatenates 2 strings
+* @dstn: the destination of the buffer
+* @src: the source of the buffer
+* Return: the pointer to the destionation of the buffer
+*/
 
-char *_strcat(char *dest, char *src)
+char *_strcat(char *dstn, char *src)
 {
-	int i, j;
+	int a;
+	int b;
 
-	i = 0;
-	while (*(dest + i) != '\0')
-		i++;
-
-	j = 0;
-	while (*(src + j) != '\0')
-	{
-		*(dest + i) = *(src + j);
-		i++;
-		j++;
-	}
-
-	*(dest + i) = '\0';
-
-	return (dest);
+	for (a = 0; dstn[a] != '\0'; a++)
+		;
+	for (b = 0; src[b] != '\0'; b++, a++)
+		dstn[a] = src[b];
+	dstn[a] = '\0';
+	return (dstn);
 }

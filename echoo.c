@@ -1,104 +1,74 @@
 #include "shell.h"
 
 /**
-* handle_enr_var - handle enviroment variables
-* @str: string to handle
-* Return: string with enviroment variables
+* _echoo - print a string
+* @arg: argument
+* 
+* Return: 0
 */
-
-char *handle_enr_var(char *str)
+int _echoo(char **arg)
 {
-	char *new_str = NULL, *aux = NULL, *aux2 = NULL;
-	int i = 0, j = 0, k = 0, len = 0, len2 = 0;
+	int pid, last_exit_status = 0;
+	char *s;
+	size_t len;
 
-	if (str == NULL)
-		return (NULL);
-	len = _strlen(str);
-	new_str = malloc(sizeof(char) * (len + 1));
-	if (new_str == NULL)
-		return (NULL);
-	while (str[i])
+	if (arg[1] == NULL)
 	{
-		if (str[i] == '$')
+		_print_str("\n");
+		return (0);
+	}
+	else
+	{
+		if (_strncmp("$$", arg[1], _strlen(arg[1])) == 0)
 		{
-			aux = _getenv("PATH");
-			len2 = _strlen(aux);
-			aux2 = malloc(sizeof(char) * (len2 + 1));
-			if (aux2 == NULL)
-				return (NULL);
-			while (aux[j])
-			{
-				aux2[j] = aux[j];
-				j++;
-			}
-			aux2[j] = '\0';
-			free(aux);
-			while (aux2[k])
-			{
-				new_str[k] = aux2[k];
-				k++;
-			}
-			free(aux2);
+			pid = getpid();
+			_print_num(pid);
+			_print_str("\n");
+		}
+		else if (_strncmp("$?", arg[1], _strlen(arg[1])) == 0)
+		{
+			_print_num(last_exit_status);
+			_print_str("\n");
+		}
+		else if (arg[1][0] == '$')
+			handle_env_var(arg[1]);
+		else if ((arg[1][0] == '"' && arg[1][_strlen(arg[1]) - 1] == '"') ||
+			(arg[1][0] == '\'' && arg[1][_strlen(arg[1]) - 1] == '\''))
+		{
+			s = arg[1] + 1;
+			len = _strlen(arg[1]) - 2;
+			s[len] = '\0';
+			_print_str(s);
+			_print_str("\n");
 		}
 		else
-			new_str[k] = str[i];
-		i++;
-		k++;
-	}
-	new_str[k] = '\0';
-	return (new_str);
-}
-
-/**
-* _echo - print a string
-* @args: arguments
-* Return: 0 on success
-*/
-
-int _echo(char **args)
-{
-	int i = 1, j = 0, len = 0;
-	char *new_str = NULL;
-
-	while (args[i])
-	{
-		new_str = handle_enr_var(args[i]);
-		if (new_str == NULL)
-			return (0);
-		len = _strlen(new_str);
-		while (new_str[j])
 		{
-			write(STDOUT_FILENO, &new_str[j], 1);
-			j++;
+			_print_str(arg[1]);
+			_print_str("\n");
 		}
-		free(new_str);
-		i++;
 	}
-	write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
 
 /**
-* _env - print the enviroment variables
-* @args: arguments
-* Return: 0 on success
+* handle_env_var - handle environment variables
+* 
+* @arg: argument
+* 
+* Return: void
 */
 
-int _env(char **args)
+void handle_env_var(char* arg)
 {
-	int i = 0, j = 0, len = 0;
+	char* va_name, * va_value;
 
-	while (environ[i])
+	va_name = arg + 1; /* skip $ */
+	va_value = get_env(va_name);
+	if (va_value != NULL)
 	{
-		len = _strlen(environ[i]);
-		while (environ[i][j])
-		{
-			write(STDOUT_FILENO, &environ[i][j], 1);
-			j++;
-		}
-		write(STDOUT_FILENO, "\n", 1);
-		j = 0;
-		i++;
+		_print_str(va_value);
+		_print_str("\n");
 	}
-	return (0);
+	else
+		_print_str("\n");
 }
