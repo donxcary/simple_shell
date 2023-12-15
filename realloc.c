@@ -1,160 +1,61 @@
 #include "shell.h"
 
 /**
-* _memcpy - copy infos between void ptrs
-* @newptr: destination ptr
-* @ptr: the source pointer
-* @size: the size of the new ptr
-* Return: 0
-*/
-
-void _memcpy(void *newptr, const void *ptr, unsigned int size)
+ **_memset - fills memory with a constant byte
+ *@s: the pointer to the memory area
+ *@b: the byte to fill *s with
+ *@n: the amount of bytes to be filled
+ *Return: (s) a pointer to the memory area s
+ */
+char *_memset(char *s, char b, unsigned int n)
 {
-	char *char_newptr = (char *)newptr;
-	char *char_ptr = (char *)ptr;
-	unsigned int i;
+	unsigned int i; /* unsigned int is used to compare with n */
 
-	for (i = 0; i < size; i++)
-		char_newptr[i] = char_ptr[i];
+	for (i = 0; i < n; i++) /* loop through the array */
+		s[i] = b; /* set each element to the value of b */
+	return (s); /* return the array */
 }
 
 /**
-* _eputs - prints a string to stderr
-* @str: the string to print
-* Return: 0
-*/
-void _eputs(char *str)
+ * ffree - frees a string of strings
+ * @pp: string of strings
+ */
+void ffree(char **pp)
 {
-	int i;
+	char **a = pp; /* array of strings */
 
-	for (i = 0; str[i] != '\0'; i++)
-		;
-	write(STDERR_FILENO, str, i);
+	if (!pp)
+		return; /* if pp is NULL, return */
+	while (*pp) /* loop through the array */
+		free(*pp++); /* free each string */
+	free(a); /* free the array */
 }
 
 /**
-* _eputchar - prints a char to stderr
-* @char: the char to print
-* Return: 0
-*/
-int _eputchar(char)
-{
-	return (write(STDERR_FILENO, &c, 1));
-}
-
-/**
-* _putfd - prints a char to a file descriptor
-* @c: the char to print
-* @fd: the file descriptor
-* Return: 0
-*/
-int _putfd(char c, int fd)
-{
-	return (write(fd, &c, 1));
-}
-
-/**
-* _putsfd - prints a string to a file descriptor
-* @str: the string to print
-* @fd: the file descriptor
-* Return: 0
-*/
-int _putsfd(char *str, int fd)
-{
-int i;
-
-	for (i = 0; str[i] != '\0'; i++)
-		;
-	return (write(fd, str, i));
-}
-
-/**
-* _strcmp - compares two strings
-* @s1: first string
-* @s2: second string
-* Return: 0 if equal, else the difference
-*/
-int _strcmp(char *s1, char *s2)
-{
-int i = 0;
-
-	while (s1[i] == s2[i] && s1[i] != '\0')
-		i++;
-
-	return (s1[i] - s2[i]);
-}
-
-/**
-* starts_with - checks if a string starts with another
-* @str: the string to check
-* @start: the string to check against
-* Return: 0 if equal, else the difference
-*/
-char *starts_with(const char *str, const char *start)
-{
-int i = 0;
-
-	while (str[i] == start[i] && str[i] != '\0')
-		i++;
-
-	if (start[i] == '\0')
-		return (str + i);
-	return (NULL);
-}
-
-/**
-* _realloc - reallocates a memory block
-* @ptr: pointer to the memory prev allocated
-* @old_size: size in bytes of the allocated space of pointer
-* @new_size: new size in bytes of the new memory block
-* Return: pointer
-*/
+ * _realloc - reallocates a block of memory
+ * @ptr: pointer to previous malloc'ated block
+ * @old_size: byte size of previous block
+ * @new_size: byte size of new block
+ * Return: pointer to da ol'block nameen.
+ */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	void *newptr;
+	char *p; /* pointer to new block */
 
-	if (ptr == NULL)
-		return (malloc(new_size));
-
-	if (new_size == 0)
-	{
-		free(ptr);
-		return (NULL);
-	}
+	if (!ptr)
+		return (malloc(new_size)); /* malloc new_size bytes */
+	if (!new_size)
+		return (free(ptr), NULL); /* free ptr and return NULL */
 	if (new_size == old_size)
-		return (ptr);
+		return (ptr); /* return ptr if new_size == old_size */
 
-	newptr = malloc(new_size);
-	if (newptr == NULL)
-		return (NULL);
+	p = malloc(new_size); /* malloc new_size bytes */
+	if (!p)
+		return (NULL); /* return NULL if malloc fails */
 
-	if (new_size < old_size)
-		_memcpy(newptr, ptr, new_size);
-	else
-		_memcpy(newptr, ptr, old_size);
-
-	free(ptr);
-	return (newptr);
-}
-
-/**
-* _atoi - converts a string to an integer
-* @s: the string to convert
-* Return: the integer
-*/
-
-int _atoi(char *s)
-{
-	int i, sign = 1, num = 0;
-
-	for (i = 0; s[i] != '\0'; i++)
-	{
-		if (s[i] == '-')
-			sign *= -1;
-		else if (s[i] >= '0' && s[i] <= '9')
-			num = num * 10 + (s[i] - '0');
-		else if (num > 0)
-			break;
-	}
-	return (num * sign);
+	old_size = old_size < new_size ? old_size : new_size;
+	while (old_size--) /* loop through old_size */
+		p[old_size] = ((char *)ptr)[old_size];
+	free(ptr); /* free ptr */
+	return (p);
 }

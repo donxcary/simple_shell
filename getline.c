@@ -1,85 +1,107 @@
 #include "shell.h"
 
 /**
-* read_char - read a character from standard input
-* Return: the character read, or -1 on error or end of file
-*/
-int read_char(void)
+ * input_buf - buffers chained commands
+ * @info: parameter struct
+ * @buf: address of buffer
+ * @len: address of len var
+ * Return: bytes read
+ */
+ssize_t input_buf(info_t *info, char **buf, size_t *len)
 {
-	char t;
-	int i;
+	ssize_t r = 0;
+	size_t len_p = 0;
 
-	i = read(STDIN_FILENO, &t, 1);
-	if (i == -1 || i == 0)
-		return (-1);
-	return (t);
-}
-
-/**
-* skip_spaces - skip any consecutive spaces in the input
-* Return: the next non-space character, or -1 on error or end of file
-*/
-int skip_spaces(void)
-{
-	int t;
-
-	t = read_char();
-	while (t == ' ')
-		t = read_char();
-	return (t);
-}
-
-/**
-* get_line - read the input from stream
-* @lineptr: buffer that stores the input
-* @n: the size of lineptr
-* @stream: the stream to read from
-* Return: num of bytes
-*/
-ssize_t get_line(char **lineptr, size_t *n, FILE *stream)
-{
-	int i;
-	static ssize_t input;
-	ssize_t retval;
-	char* buffer, t = 'z';
-
-	if (input == 0)
-		fflush(stream);
-	else
-		return (-1);
-	input = 0;
-	buffer = malloc(sizeof(char) * BUFSIZE);
-	if (buffer == NULL)
-		return (-1);
-	while (t != '\n')
+	if (!*len) /* if nothing left in the buffer, fill it */
 	{
-		t = read_char();
-		if (t == -1)
+		/* bfree((void **)info->cmd_buf) */
+		free(*buf);
+		*buf = NULL;
+		signal(SIGINT, sigintHandler);
+#if USE_GETLINE
+		r = getline(buf, &len_p, stdin);
+#else
+		r = _getline(info, buf, &len_p);
+#endif
+		if (r > 0)
 		{
-			free(buffer);
-			return (-1);
-		}
-		if (input >= BUFSIZE)
-		{
-			buffer = _realloc(buffer, input, input + 1);
-			if (buffer == NULL)
-				return (-1);
-		}
-		buffer[input] = t;
-		input++;
-		if (t == ' ')
-		{
-			t = skip_spaces();
-			if (t == -1)
-				break;
-			buffer[input] = t;
-			input++;
+			if ((*buf)[r - 1] == '\n') /* if newline, remove it */
+			{
+				(*buf)[r - 1] = '\0'; /* remove trailing newline */
+				r--;
+			}
+			info->linecount_flag = 1; /* set linecount flag */
+			remove_comments(*buf);
+			build_history_list(info, *buf, info->histcount++);
+			/* if (_strchr(*buf, ';')) is this a command chain? */
+			{
+				*len = r; /* set length of buffer */
+				info->cmd_buf = buf; /* set cmd_buf to buffer */
+			}
 		}
 	}
-	buffer[input] = '\0';
-	bring_line(lineptr, n, buffer, input);
-	retval = input;
-	if (t != -1)
-		input = 0;
-	return (retval);
+	return (r);
+}
+
+/**
+ * get_input - gets a line minus the newline
+ * @info: parameter struct
+ * Return: bytes read
+ */
+ssize_t get_input(info_t *info)
+{
+	static char *buf; /* the ';' command chain buffer */
+	static size_t i, j, len;
+	ssize_t r = 0;
+	char **buf_p = &(info->arg), *p;
+
+	_putchar(BUF_FLUSH);
+	r = input_buf(info, &buf, &len);
+	if (r == -1)
+		return (-1); /* if error, return error */
+	if (len)	/* we have commands left in the chain buffer */
+	{
+		j = i; /* init new iterator to current buf position */
+		p = buf + i; /* get pointer for return */
+
+		check_chain(info, buf, &j, i, len); /* check for chain errors */
+		while (j < len) /* iterate to semicolon or end */
+		{
+			if (is_chain(info, buf, &j))
+				break;
+			j++;
+		}
+
+		i = j + 1; /* increment past nulled ';'' */
+		if (i >= len) /* reached end of buffer? */
+		{
+			i = len = 0; /* reset position and length */
+			info->cmd_buf_type = CMD_NORM; /* reset command type */
+		}
+
+		*buf_p = p; /* pass back pointer to current command position */
+		return (_strlen(p)); /* return length of current command */
+	}
+
+	*buf_p = buf; /* else not a chain, pass back buffer from _getline() */
+	return (r); /* return length of buffer from _getline() */
+}
+
+/**
+ * read_buf - reads a buffer
+ * @info: parameter struct
+ * @buf: buffer
+ * @i: size
+ * Return: r
+ */
+ssize_t read_buf(info_t *info, char *buf, size_t *i)
+{
+	ssize_t r = 0;
+
+	if (*i)
+		return (0);
+	r = read(info->readfd, buf, READ_BUF_SIZE);
+	if (r >= 0)
+		*i = r;
+	return (r);
 }
