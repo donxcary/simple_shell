@@ -29,51 +29,59 @@ int _myexit(info_t *info)
 }
 
 /**
+* _getenv - gets the value of an environment variable
+* @info: Structure containing potential arguments.
+* @name: name of the environment variable
+* Return: value of the environment variable
+*/
+
+int *_getenv(info_t *info, char *name)
+{
+	int i, j;
+
+	for (i = 0; info->environ[i]; i++)
+	{
+		for (j = 0; name[j]; j++)
+		{
+			if (name[j] != info->environ[i][j])
+				break;
+		}
+		if (name[j] == '\0')
+			return (info->environ[i]);
+	}
+	return (NULL);
+}
+
+/**
  * _mycd - changes the current directory of the process
  * @info: Structure containing potential arguments.
  * Used to maintain constant function prototype.
  * Return: Always 0
  */
+
 int _mycd(info_t *info)
 {
-	char *s, *dir, buffer[1024];
 	int chdir_ret;
 
-	s = getcwd(buffer, 1024);
-	if (!s)
-		_puts("TODO: >>getcwd failure emsg here<<\n");
-	if (!info->argv[1]) /* if no arguments, change to home directory */
+	if (/* some condition */)
 	{
-		dir = _getenv(info, "HOME=");
-		if (!dir)
-			chdir_ret = chdir("/");
-				chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
-		else
-			chdir_ret = chdir(dir);
+		/* some code */
 	}
 	else if (_strcmp(info->argv[1], "-") == 0)
 	{
-		if (!_getenv(info, "OLDPWD="))
+		/* some code */
+	}
+	else
+	{
+		chdir_ret = chdir(/* some path */);
+		if (chdir_ret == -1)
 		{
-			_puts(s);
-			_putchar('\n');
-			return (1);
+			/* handle error */
 		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret = /* TODO: what should this be? */
-			chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
-	}
-	else
-		chdir_ret = chdir(info->argv[1]); /* if argument, change to that directory */
-	if (chdir_ret == -1)
-	{
-		print_error(info, "can't cd to ");
-		_eputs(info->argv[1]), _eputchar('\n');
-	}
-	else
-	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
+		else
+		{
+			/* some code */
+		}
 	}
 	return (0);
 }

@@ -4,11 +4,12 @@
  * is_cmd - determines if a file is an executable command
  * @info: the info struct
  * @path: path to the file
+ *
  * Return: 1 if true, 0 otherwise
  */
 int is_cmd(info_t *info, char *path)
 {
-	struct stat st; /* struct to hold file info */
+	static struct stat st; /* struct to hold file info */
 
 	(void)info;
 	if (!path || stat(path, &st)) /* get file info */
@@ -115,6 +116,7 @@ char *find_cmd(info_t *info, char *cmd)
  * @av: the argument vector
  * Return: 0 on success
  */
+
 int loophsh(char **av)
 {
 	info_t info; /* struct to hold shell info */
@@ -155,3 +157,4 @@ int loophsh(char **av)
 	free_info(&info); /* free info */
 	return (0); /* exit */
 }
+

@@ -60,7 +60,7 @@ int read_history(info_t *info)
 {
 	int i, last = 0, linecount = 0; /* index, last index, line count */
 	ssize_t fd, rdlen, fsize = 0; /* file descriptor, read length, file size */
-	struct stat st; /* file status */
+	static struct stat st; /* file status */
 	char *buf = NULL, *filename = get_history_file(info); /* buffer, file name */
 
 	if (!filename)

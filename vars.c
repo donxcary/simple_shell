@@ -159,3 +159,4 @@ int replace_string(char **old, char *new)
 	*old = new; /* replace with new string */
 	return (1); /* replaced */
 }
+
