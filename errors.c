@@ -1,41 +1,45 @@
 #include "shell.h"
 
 /**
-* _eputs - prints an input string to stderr
-* @str: the string to be printed
-* Return: nothing
-*/
+ *_eputs - prints an input string
+ * @str: the string to be printed
+ *
+ * Return: Nothing
+ */
 void _eputs(char *str)
 {
-	int i = 0;
+	int i = 0; /* index */
 
-	if (!str)
-		return;
+	if (!str) /* if str is NULL */
+		return; /* do nothing */
 	while (str[i] != '\0')
 	{
+		/* while str is not at the end */
 		_eputchar(str[i]);
-		i++;
+		i++; /* increment index */
 	}
 }
 
 /**
  * _eputchar - writes the character c to stderr
  * @c: The character to print
+ *
  * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
  */
 int _eputchar(char c)
 {
+	/* write to stderr */
 	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
+	/* static variables are initialized once */
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
 		write(2, buf, i);
 		i = 0;
 	}
 	if (c != BUF_FLUSH)
-		buf[i++] = c;
+		buf[i++] = c; /* add char to buffer */
 	return (1);
 }
 
@@ -43,8 +47,8 @@ int _eputchar(char c)
  * _putfd - writes the character c to given fd
  * @c: The character to print
  * @fd: The filedescriptor to write to
+ *
  * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
  */
 int _putfd(char c, int fd)
 {
@@ -54,10 +58,10 @@ int _putfd(char c, int fd)
 	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
 		write(fd, buf, i);
-		i = 0;
+		i = 0; /* reset index */
 	}
 	if (c != BUF_FLUSH)
-		buf[i++] = c;
+		buf[i++] = c; /* add char to buffer */
 	return (1);
 }
 
@@ -72,11 +76,11 @@ int _putsfd(char *str, int fd)
 {
 	int i = 0;
 
-	if (!str)
+	if (!str) /* if str is NULL */
 		return (0);
-	while (*str)
+	while (*str) /* while str is not at the end */
 	{
-		i += _putfd(*str++, fd);
+		i += _putfd(*str++, fd); /* print char and increment index */
 	}
 	return (i);
 }

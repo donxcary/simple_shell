@@ -9,17 +9,19 @@
  */
 int is_cmd(info_t *info, char *path)
 {
-	static struct stat st; /* struct to hold file info */
+/* determines if a file is an executable command */
+	struct stat st;
 
-	(void)info;
-	if (!path || stat(path, &st)) /* get file info */
-		return (0); /* file does not exist */
+/* stat() stats the file pointed to by path and fills in buf */
+	(void)info; /* unused parameter */
+	if (!path || stat(path, &st))
+		return (0);
 
 	if (st.st_mode & S_IFREG)
 	{
-		return (1); /* file exists and is a regular file */
+		return (1); /* file exists */
 	}
-	return (0); /* file exists but is not a regular file */
+	return (0);
 }
 
 /**
@@ -27,17 +29,20 @@ int is_cmd(info_t *info, char *path)
  * @pathstr: the PATH string
  * @start: starting index
  * @stop: stopping index
+ *
  * Return: pointer to new buffer
  */
 char *dup_chars(char *pathstr, int start, int stop)
 {
-	static char buf[1024]; /* static buffer to hold path */
-	int i = 0, k = 0; /* iterators */
+/* duplicates characters */
+	static char buf[1024];
+	int i = 0, k = 0; /* i = index, k = counter */
 
+/* copy characters from pathstr to buf */
 	for (k = 0, i = start; i < stop; i++)
-		if (pathstr[i] != ':') /* skip colons */
+		if (pathstr[i] != ':')
 			buf[k++] = pathstr[i];
-	buf[k] = 0; /* null terminate */
+	buf[k] = 0; /* null terminate buf */
 	return (buf);
 }
 
@@ -46,6 +51,7 @@ char *dup_chars(char *pathstr, int start, int stop)
  * @info: the info struct
  * @pathstr: the PATH string
  * @cmd: the cmd to find
+ *
  * Return: full path of cmd if found or NULL
  */
 char *find_path(info_t *info, char *pathstr, char *cmd)
@@ -54,107 +60,33 @@ char *find_path(info_t *info, char *pathstr, char *cmd)
 	char *path;
 
 	if (!pathstr)
-		return (NULL); /* no PATH variable */
+		return (NULL);
 	if ((_strlen(cmd) > 2) && starts_with(cmd, "./"))
 	{
+	/* if cmd starts with ./ */
 		if (is_cmd(info, cmd))
 			return (cmd);
 	}
 	while (1)
 	{
+	/* loop through pathstr */
 		if (!pathstr[i] || pathstr[i] == ':')
 		{
-			path = dup_chars(pathstr, curr_pos, i); /* duplicate chars */
-			if (!*path)
-				_strcat(path, cmd); /* no path, use cmd */
+			path = dup_chars(pathstr, curr_pos, i);
+			if (!*path) /* if path is empty */
+				_strcat(path, cmd);
 			else
 			{
-				_strcat(path, "/"); /* add slash */
-				_strcat(path, cmd); /* add cmd */
+				_strcat(path, "/"); /* concatenate path and cmd */
+				_strcat(path, cmd);
 			}
 			if (is_cmd(info, path))
-				return (path); /* found cmd */
+				return (path);
 			if (!pathstr[i])
-				break; /* end of string */
+				break; /* break if end of pathstr */
 			curr_pos = i;
 		}
-		i++;
+		i++; /* increment index */
 	}
 	return (NULL);
 }
-
-/**
- * find_cmd - finds the full path of a cmd
- * @info: the info struct
- * @cmd: the cmd to find
- * Return: full path of cmd if found or NULL
- */
-
-char *find_cmd(info_t *info, char *cmd)
-{
-	char *pathstr = NULL, *path = NULL; /* PATH string and path */
-
-	if (!cmd)
-		return (NULL);
-	if (cmd[0] == '/')
-	{
-		if (is_cmd(info, cmd)) /* check if cmd is a file */
-			return (cmd);
-	}
-	else
-	{
-		pathstr = _getenv(info->env, "PATH"); /* get PATH string */
-		path = find_path(info, pathstr, cmd); /* find cmd in PATH */
-		if (path)
-			return (path);
-	}
-	return (NULL);
-}
-
-/**
- * loophsh - loops the shell
- * @av: the argument vector
- * Return: 0 on success
- */
-
-int loophsh(char **av)
-{
-	info_t info; /* struct to hold shell info */
-	char *line = NULL, **args = NULL, *cmd = NULL; /* cmd and args */
-	int status = 0, i = 0; /* status of last command */
-
-	(void)av;
-	init_info(&info);
-	while (1)
-	{
-		if (isatty(STDIN_FILENO)) /* if stdin is a terminal */
-			write(STDOUT_FILENO, "$ ", 2); /* print prompt */
-		line = _getline(&info);
-		if (!line)
-			break; /* user pressed ctrl+d */
-		args = split_line(line);
-		if (!args)
-			continue; /* user pressed enter */
-		if (!args[0])
-		{
-			free(args);
-			continue; /* user pressed enter */
-		}
-		cmd = find_cmd(&info, args[0]); /* find cmd */
-		if (!cmd) /* cmd not found */
-		{
-			print_error(&info, args[0], "not found");
-			free(args);
-			continue;
-		}
-		status = execute_cmd(&info, cmd, args);
-		for (i = 0; args[i]; i++)
-			free(args[i]);
-		free(args); /* free args */
-		if (status == 2)
-			break; /* user typed exit */
-	}
-	free_info(&info); /* free info */
-	return (0); /* exit */
-}
-

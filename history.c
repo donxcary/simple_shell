@@ -3,84 +3,87 @@
 /**
  * get_history_file - gets the history file
  * @info: parameter struct
+ *
  * Return: allocated string containg history file
  */
 
 char *get_history_file(info_t *info)
 {
-	char *buf, *dir;
+	char *buf, *dir; /*, *home = _getenv(info, "HOME=");*/
 
-	dir = _getenv(info, "HOME="); /* get home directory */
+	dir = _getenv(info, "HOME=");
 	if (!dir)
-		return (NULL);
+		return (NULL); /*_puts("No HOME variable set\n");*/
 	buf = malloc(sizeof(char) * (_strlen(dir) + _strlen(HIST_FILE) + 2));
 	if (!buf)
-		return (NULL);
-	buf[0] = 0;
-	_strcpy(buf, dir); /* copy home directory */
-	_strcat(buf, "/"); /* add slash */
-	_strcat(buf, HIST_FILE); /* add history file name */
+		return (NULL); /*_puts("Malloc failed\n");*/
+	buf[0] = 0; /*_puts("Malloc failed\n");*/
+	_strcpy(buf, dir);
+	_strcat(buf, "/");
+	_strcat(buf, HIST_FILE);
 	return (buf);
 }
 
 /**
  * write_history - creates a file, or appends to an existing file
  * @info: the parameter struct
+ *
  * Return: 1 on success, else -1
  */
 int write_history(info_t *info)
 {
-	ssize_t fd;
-	char *filename = get_history_file(info); /* get history file */
-	list_t *node = NULL;
+	ssize_t fd; /*, rdlen, fsize = 0;*/
+	char *filename = get_history_file(info);
+	list_t *node = NULL; /*, *head = info->history;*/
 
-	if (!filename) /* if no history file, return */
-		return (-1);
+	if (!filename)
+		return (-1); /*_puts("No HOME variable set\n");*/
 
 	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
-	free(filename); /* free history file name */
-	if (fd == -1)
+	free(filename);
+	if (fd == -1) /*_puts("Open failed\n");*/
 		return (-1);
 	for (node = info->history; node; node = node->next)
 	{
-		_putsfd(node->str, fd); /* write history entry */
+		_putsfd(node->str, fd);
 		_putfd('\n', fd);
 	}
 	_putfd(BUF_FLUSH, fd);
-	close(fd); /* close file */
+	close(fd);
 	return (1);
 }
 
 /**
  * read_history - reads history from file
  * @info: the parameter struct
- * Return: histcount on success, 0 otherwise
+ *
+ * Return: the number of lines read
  */
 int read_history(info_t *info)
-{
-	int i, last = 0, linecount = 0; /* index, last index, line count */
-	ssize_t fd, rdlen, fsize = 0; /* file descriptor, read length, file size */
-	static struct stat st; /* file status */
-	char *buf = NULL, *filename = get_history_file(info); /* buffer, file name */
+{ /*int i, last = 0, linecount = 0;*/
+	int i, last = 0, linecount = 0;
+	ssize_t fd, rdlen, fsize = 0;
+	struct stat st; /*, *st = NULL;*/
+	char *buf = NULL, *filename = get_history_file(info);
 
 	if (!filename)
-		return (0);
+		return (0); /*_puts("No HOME variable set\n");*/
 
-	fd = open(filename, O_RDONLY); /* open history file */
+	fd = open(filename, O_RDONLY);
 	free(filename);
 	if (fd == -1)
 		return (0);
 	if (!fstat(fd, &st))
-		fsize = st.st_size; /* get file size */
+		fsize = st.st_size;
 	if (fsize < 2)
 		return (0);
 	buf = malloc(sizeof(char) * (fsize + 1));
-	if (!buf)
+	if (!buf) /*_puts("Malloc failed\n");*/
 		return (0);
 	rdlen = read(fd, buf, fsize);
 	buf[fsize] = 0;
 	if (rdlen <= 0)
-		return (free(buf), 0); /* read file into buffer */
+		return (free(buf), 0);
 	close(fd);
 	for (i = 0; i < fsize; i++)
 		if (buf[i] == '\n')
@@ -89,13 +92,13 @@ int read_history(info_t *info)
 			build_history_list(info, buf + last, linecount++);
 			last = i + 1;
 		}
-	if (last != i) /* if last line doesn't end with newline */
+	if (last != i)
 		build_history_list(info, buf + last, linecount++);
-	free(buf); /* free buffer */
+	free(buf);
 	info->histcount = linecount;
 	while (info->histcount-- >= HIST_MAX)
 		delete_node_at_index(&(info->history), 0);
-	renumber_history(info); /* renumber history */
+	renumber_history(info);
 	return (info->histcount);
 }
 
@@ -109,15 +112,15 @@ int read_history(info_t *info)
  */
 int build_history_list(info_t *info, char *buf, int linecount)
 {
-	list_t *node = NULL; /* node to add */
+	list_t *node = NULL;
 
-	if (info->history) /* if history exists */
+	if (info->history)
 		node = info->history;
 	add_node_end(&node, buf, linecount);
 
-	if (!info->history) /* if history doesn't exist */
+	if (!info->history)
 		info->history = node;
-	return (0); /* return success */
+	return (0);
 }
 
 /**
@@ -128,13 +131,13 @@ int build_history_list(info_t *info, char *buf, int linecount)
  */
 int renumber_history(info_t *info)
 {
-	list_t *node = info->history; /* node to add */
-	int i = 0; /* index */
+	list_t *node = info->history;
+	int i = 0; /*, j = 0;*/
 
 	while (node)
 	{
-		node->num = i++;
-		node = node->next;
+		node->num = i++; /*j = node->num;*/
+		node = node->next; /*node->num = i++;*/
 	}
-	return (info->histcount = i); /* return new histcount */
+	return (info->histcount = i);
 }

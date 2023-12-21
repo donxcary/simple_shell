@@ -3,16 +3,17 @@
 /**
  * bfree - frees a pointer and NULLs the address
  * @ptr: address of the pointer to free
+ *
  * Return: 1 if freed, otherwise 0.
  */
 int bfree(void **ptr)
 {
+/* free a pointer and NULL the address */
 	if (ptr && *ptr)
-		/* if ptr is not NULL and *ptr is not NULL */
 	{
-		free(*ptr); /* free the memory */
+		free(*ptr); /* free the pointer */
 		*ptr = NULL; /* NULL the address */
-		return (1); /* return 1 for success */
+		return (1); /* return success */
 	}
-	return (0); /* return 0 for failure */
+	return (0);
 }
